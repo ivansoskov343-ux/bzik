@@ -1,0 +1,16 @@
+# Python
+bzik_backend/.venv/
+bzik_backend/__pycache__/
+bzik_backend/**/__pycache__/
+bzik_backend/**/*.pyc
+bzik_backend/.env
+bzik_backend/media/
+bzik_backend/staticfiles/
+
+# Node
+bzik_frontend/node_modules/
+bzik_frontend/.next/
+bzik_frontend/.env.local
+
+# OS
+.DS_Store
