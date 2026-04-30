@@ -1,9 +1,13 @@
 import type { Metadata } from 'next'
-import { Geist } from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import Providers from '@/lib/providers'
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '700'],
+  variable: '--font-jetbrains-mono'
+})
 
 export const metadata: Metadata = {
   title: 'IdeaHub — платформа краудсорсинга идей',
@@ -12,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${geist.variable} h-full`}>
+    <html lang="ru" className={`${jetbrainsMono.variable} h-full font-mono`}>
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
         <Providers>{children}</Providers>
       </body>

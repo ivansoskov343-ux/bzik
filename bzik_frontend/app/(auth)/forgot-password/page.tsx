@@ -24,19 +24,38 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader><CardTitle>Восстановление пароля</CardTitle></CardHeader>
-        <CardContent>
+    <div className="flex-1 flex items-center justify-center px-4 py-16 bg-white font-mono">
+      <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none">
+        <CardHeader className="border-b-2 border-black">
+          <CardTitle className="text-3xl font-bold text-center">Восстановление пароля</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-8">
           {done ? (
-            <p className="text-sm text-muted-foreground">Если email зарегистрирован, письмо отправлено.</p>
+            <div className="text-center">
+              <p className="text-lg text-muted-foreground mb-6">Если email зарегистрирован, письмо отправлено.</p>
+              <Button 
+                className="bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black"
+                onClick={() => setDone(false)}
+              >
+                Отправить ещё раз
+              </Button>
+            </div>
           ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-1">
-                <Label>Email</Label>
-                <Input type="email" {...register('email', { required: true })} />
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-2">
+                <Label className="text-lg font-bold">Email</Label>
+                <Input 
+                  type="email" 
+                  {...register('email', { required: true })} 
+                  className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                />
               </div>
-              <Button type="submit" className="w-full">Отправить ссылку</Button>
+              <Button 
+                type="submit" 
+                className="w-full bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black text-lg font-bold py-6 transition-all"
+              >
+                Отправить ссылку
+              </Button>
             </form>
           )}
         </CardContent>

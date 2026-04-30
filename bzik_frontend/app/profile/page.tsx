@@ -98,18 +98,18 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="max-w-3xl mx-auto px-4 py-8 w-full space-y-6">
+      <main className="max-w-3xl mx-auto px-4 py-8 w-full space-y-6 bg-white font-mono">
         {/* Profile card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <Card className="border-2 border-black rounded-none">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 border-b-2 border-black">
             <CardTitle>Профиль</CardTitle>
             {!editing && (
-              <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
+              <Button size="sm" variant="outline" className="border-2 border-black rounded-none hover:bg-black hover:text-white" onClick={() => setEditing(true)}>
                 Редактировать
               </Button>
             )}
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 pt-4">
             {editing ? (
               <form
                 onSubmit={handleSubmit((data) => editMutation.mutate(data))}
@@ -126,13 +126,14 @@ export default function ProfilePage() {
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" size="sm" disabled={editMutation.isPending}>
+                  <Button type="submit" size="sm" disabled={editMutation.isPending} className="bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent">
                     {editMutation.isPending ? 'Сохранение...' : 'Сохранить'}
                   </Button>
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
+                    className="border-2 border-black rounded-none hover:bg-black hover:text-white"
                     onClick={() => { setEditing(false); reset({ nickname: user.nickname }) }}
                   >
                     Отмена
@@ -163,6 +164,7 @@ export default function ProfilePage() {
             <Button
               size="sm"
               variant={tab === 'ideas' ? 'default' : 'outline'}
+              className={tab === 'ideas' ? 'bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent' : 'border-2 border-black rounded-none hover:bg-black hover:text-white'}
               onClick={() => setTab('ideas')}
             >
               Мои идеи ({ideas.length})
@@ -170,6 +172,7 @@ export default function ProfilePage() {
             <Button
               size="sm"
               variant={tab === 'comments' ? 'default' : 'outline'}
+              className={tab === 'comments' ? 'bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent' : 'border-2 border-black rounded-none hover:bg-black hover:text-white'}
               onClick={() => setTab('comments')}
             >
               Мои комментарии
@@ -186,22 +189,22 @@ export default function ProfilePage() {
                   key={idea.id}
                   href={idea.task ? `/tasks/${idea.task}#idea-${idea.id}` : `/tasks/misc#idea-${idea.id}`}
                 >
-                  <Card className="hover:shadow-sm transition-shadow cursor-pointer">
-                    <CardContent className="pt-4">
-                      <div className="flex justify-between mb-1">
-                        <span className="text-xs text-muted-foreground font-medium">
-                          {idea.task_title ?? 'Прочее'}
-                        </span>
-                        <Badge variant="secondary" className="text-xs">
-                          {STATUS_LABEL[idea.status]}
-                        </Badge>
-                      </div>
-                      <p className="text-sm line-clamp-2">{idea.text}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(idea.created_at).toLocaleString('ru')}
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <Card className="border-2 border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer">
+                      <CardContent className="pt-4">
+                        <div className="flex justify-between mb-1">
+                          <span className="text-xs text-black font-medium">
+                            {idea.task_title ?? 'Прочее'}
+                          </span>
+                          <Badge variant="secondary" className="text-xs border border-black bg-white text-black">
+                            {STATUS_LABEL[idea.status]}
+                          </Badge>
+                        </div>
+                        <p className="text-sm line-clamp-2 text-black">{idea.text}</p>
+                        <p className="text-xs text-gray-600 mt-1">
+                          {new Date(idea.created_at).toLocaleString('ru')}
+                        </p>
+                      </CardContent>
+                    </Card>
                 </Link>
               ))}
             </div>
@@ -217,13 +220,13 @@ export default function ProfilePage() {
                   key={comment.id}
                   href={comment.task_id ? `/tasks/${comment.task_id}#idea-${comment.idea_id}` : '#'}
                 >
-                  <Card className="hover:shadow-sm transition-shadow cursor-pointer">
+                  <Card className="border-2 border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer">
                     <CardContent className="pt-4">
-                      <p className="text-xs text-muted-foreground font-medium mb-1">
+                      <p className="text-xs text-black font-medium mb-1">
                         {comment.task_title ?? 'Прочее'} → идея #{comment.idea_id}
                       </p>
-                      <p className="text-sm line-clamp-2">{comment.text}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-sm line-clamp-2 text-black">{comment.text}</p>
+                      <p className="text-xs text-gray-600 mt-1">
                         {new Date(comment.created_at).toLocaleString('ru')}
                       </p>
                     </CardContent>

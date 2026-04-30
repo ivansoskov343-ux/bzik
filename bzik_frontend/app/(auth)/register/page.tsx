@@ -47,52 +47,80 @@ export default function RegisterPage() {
 
   if (done) {
     return (
-      <div className="flex-1 flex items-center justify-center px-4">
-        <Card className="w-full max-w-sm text-center p-8">
-          <p className="text-lg font-semibold mb-2">Аккаунт создан!</p>
-          <p className="text-muted-foreground text-sm">
+      <div className="flex-1 flex items-center justify-center px-4 bg-white font-mono">
+        <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none text-center p-10">
+          <p className="text-2xl font-bold mb-4">Аккаунт создан!</p>
+          <p className="text-muted-foreground text-lg">
             Проверьте email и перейдите по ссылке для подтверждения.
           </p>
+          <Link href="/login">
+            <Button className="mt-6 bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black">
+              Войти
+            </Button>
+          </Link>
         </Card>
       </div>
     )
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-16">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Регистрация</CardTitle>
+    <div className="flex-1 flex items-center justify-center px-4 py-16 bg-white font-mono">
+      <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none">
+        <CardHeader className="border-b-2 border-black">
+          <CardTitle className="text-3xl font-bold text-center">Регистрация</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register('email')} />
-              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+        <CardContent className="pt-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-lg font-bold">Email</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                {...register('email')} 
+                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+              />
+              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="nickname">Никнейм</Label>
-              <Input id="nickname" {...register('nickname')} />
-              {errors.nickname && <p className="text-sm text-red-500">{errors.nickname.message}</p>}
+            <div className="space-y-2">
+              <Label htmlFor="nickname" className="text-lg font-bold">Никнейм</Label>
+              <Input 
+                id="nickname" 
+                {...register('nickname')} 
+                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+              />
+              {errors.nickname && <p className="text-sm text-destructive">{errors.nickname.message}</p>}
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="password">Пароль</Label>
-              <Input id="password" type="password" {...register('password')} />
-              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-lg font-bold">Пароль</Label>
+              <Input 
+                id="password" 
+                type="password" 
+                {...register('password')} 
+                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+              />
+              {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="password2">Повторите пароль</Label>
-              <Input id="password2" type="password" {...register('password2')} />
-              {errors.password2 && <p className="text-sm text-red-500">{errors.password2.message}</p>}
+            <div className="space-y-2">
+              <Label htmlFor="password2" className="text-lg font-bold">Повторите пароль</Label>
+              <Input 
+                id="password2" 
+                type="password" 
+                {...register('password2')} 
+                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+              />
+              {errors.password2 && <p className="text-sm text-destructive">{errors.password2.message}</p>}
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent text-lg font-bold py-6 transition-all" 
+              disabled={loading}
+            >
               {loading ? 'Создаём аккаунт...' : 'Зарегистрироваться'}
             </Button>
           </form>
-          <p className="mt-4 text-sm text-center">
+          <p className="mt-8 text-center text-lg">
             Уже есть аккаунт?{' '}
-            <Link href="/login" className="text-blue-600 hover:underline">Войти</Link>
+            <Link href="/login" className="text-accent hover:underline font-bold">Войти</Link>
           </p>
         </CardContent>
       </Card>

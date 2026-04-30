@@ -20,31 +20,59 @@ export default function Navbar() {
   }
 
   return (
-    <header className="border-b bg-white sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="font-bold text-lg tracking-tight">
-          IdeaHub
+    <header className="border-b-2 border-black bg-white sticky top-0 z-50 font-mono">
+      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <Link href="/" className="font-bold text-2xl tracking-tight">
+          BZIK
         </Link>
 
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-6">
           {mounted && isAuthenticated() ? (
             <>
-              <Link href="/tasks" className="text-sm text-muted-foreground hover:text-foreground">
+              <Link href="/tasks" className="text-sm hover:text-accent transition-colors">
                 Задания
               </Link>
-              <Link href="/ideas/misc" className="text-sm text-muted-foreground hover:text-foreground">
+              <Link href="/ideas/misc" className="text-sm hover:text-accent transition-colors">
                 Прочее
               </Link>
               <NotificationBell />
               <Link href="/profile">
-                <Button variant="outline" size="sm">{user?.nickname ?? 'Профиль'}</Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-2 border-black rounded-none hover:bg-black hover:text-white"
+                >
+                  {user?.nickname ?? 'Профиль'}
+                </Button>
               </Link>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>Выйти</Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleLogout}
+                className="hover:bg-black hover:text-white rounded-none"
+              >
+                Выйти
+              </Button>
             </>
           ) : mounted ? (
             <>
-              <Link href="/login"><Button variant="outline" size="sm">Войти</Button></Link>
-              <Link href="/register"><Button size="sm">Регистрация</Button></Link>
+              <Link href="/login">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-2 border-black rounded-none hover:bg-black hover:text-white"
+                >
+                  Войти
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button 
+                  size="sm" 
+                  className="bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent"
+                >
+                  Регистрация
+                </Button>
+              </Link>
             </>
           ) : null}
         </nav>

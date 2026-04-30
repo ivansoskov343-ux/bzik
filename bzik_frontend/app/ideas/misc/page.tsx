@@ -54,16 +54,16 @@ export default function MiscIdeasPage() {
   return (
     <>
       <Navbar />
-      <main className="max-w-3xl mx-auto px-4 py-8 w-full">
-        <h1 className="text-2xl font-bold mb-6">Прочее — свободные идеи</h1>
+      <main className="max-w-3xl mx-auto px-4 py-8 w-full bg-white font-mono">
+        <h1 className="text-2xl font-bold mb-6 text-black">Прочее — свободные идеи</h1>
 
-        <Card className="mb-8">
-          <CardHeader><CardTitle className="text-base">Поделиться идеей</CardTitle></CardHeader>
-          <CardContent>
+        <Card className="mb-8 border-2 border-black rounded-none">
+          <CardHeader className="border-b-2 border-black"><CardTitle className="text-base">Поделиться идеей</CardTitle></CardHeader>
+          <CardContent className="pt-4">
             <form onSubmit={onSubmit} className="space-y-3">
-              <Textarea {...register('text', { required: true })} placeholder="Ваша идея..." rows={4} />
-              <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.pdf" multiple className="text-sm" />
-              <Button type="submit" disabled={mutation.isPending}>
+              <Textarea {...register('text', { required: true })} placeholder="Ваша идея..." rows={4} className="border-2 border-black rounded-none focus-visible:ring-0 focus-visible:ring-offset-0" />
+              <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.pdf" multiple className="text-sm border-2 border-black rounded-none p-2 w-full" />
+              <Button type="submit" disabled={mutation.isPending} className="bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent">
                 {mutation.isPending ? 'Отправка...' : 'Отправить'}
               </Button>
             </form>
@@ -74,14 +74,16 @@ export default function MiscIdeasPage() {
 
         <div className="space-y-3">
           {(ideas as any[]).map((idea: any) => (
-            <Card key={idea.id}>
+            <Card key={idea.id} className="border-2 border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer">
               <CardContent className="pt-4">
                 <div className="flex justify-between mb-1">
-                  <span className="text-sm font-medium">{idea.author?.nickname}</span>
-                  <Badge variant="secondary" className="text-xs">{STATUS_LABEL[idea.status]}</Badge>
+                  <span className="text-sm font-medium text-black">{idea.author?.nickname}</span>
+                  <Badge variant="secondary" className="text-xs border border-black bg-white text-black">
+                    {STATUS_LABEL[idea.status]}
+                  </Badge>
                 </div>
-                <p className="text-sm whitespace-pre-wrap">{idea.text}</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-sm whitespace-pre-wrap text-black">{idea.text}</p>
+                <p className="text-xs text-gray-600 mt-1">
                   {new Date(idea.created_at).toLocaleString('ru')}
                 </p>
               </CardContent>

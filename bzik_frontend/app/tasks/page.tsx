@@ -48,9 +48,9 @@ export default function TasksPage() {
   return (
     <>
       <Navbar />
-      <main className="max-w-4xl mx-auto px-4 py-8 w-full">
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-          <h1 className="text-2xl font-bold mr-auto">Задания</h1>
+      <main className="max-w-6xl mx-auto px-4 py-8 w-full bg-white font-mono">
+        <div className="flex flex-wrap items-center gap-4 mb-8">
+          <h1 className="text-4xl font-bold mr-auto">Задания</h1>
           <div className="flex gap-2 flex-wrap">
             {(Object.keys(ORDERING_LABELS) as OrderingKey[]).map((key) => (
               <Button
@@ -58,13 +58,14 @@ export default function TasksPage() {
                 size="sm"
                 variant={ordering === key ? 'default' : 'outline'}
                 onClick={() => setOrdering(key)}
+                className="border-2 border-black rounded-none hover:bg-black hover:text-white data-[state=on]:bg-black data-[state=on]:text-white"
               >
                 {ORDERING_LABELS[key]}
               </Button>
             ))}
           </div>
           <Input
-            className="max-w-xs"
+            className="max-w-xs border-2 border-black rounded-none focus:ring-0 focus:border-black"
             placeholder="Поиск..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -85,31 +86,31 @@ export default function TasksPage() {
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {tasks.map((task) => (
             <Link key={task.id} href={`/tasks/${task.id}`}>
-              <Card className={`hover:shadow-md transition-shadow cursor-pointer ${task.is_closed ? 'opacity-50' : ''}`}>
-                <CardHeader className="pb-2">
+              <Card className={`border-2 border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer ${task.is_closed ? 'opacity-60' : ''}`}>
+                <CardHeader className="pb-2 border-b-2 border-black">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-lg">{task.title}</CardTitle>
+                    <CardTitle className="text-xl">{task.title}</CardTitle>
                     <div className="flex gap-2 flex-shrink-0">
                       {task.is_recently_updated && (
-                        <Badge variant="secondary" title={new Date(task.last_updated_at).toLocaleString('ru')}>
+                        <Badge variant="secondary" className="border border-black rounded-none bg-white text-black" title={new Date(task.last_updated_at).toLocaleString('ru')}>
                           Обновлено {new Date(task.last_updated_at).toLocaleDateString('ru')}
                         </Badge>
                       )}
                       {task.is_closed && (
-                        <Badge variant="destructive">Закрыто</Badge>
+                        <Badge variant="destructive" className="border border-black rounded-none">Закрыто</Badge>
                       )}
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-4">
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>{task.ideas_count} идей</span>
                     <div className="flex gap-4">
                       {task.reward_hint && (
-                        <span className="text-green-600 font-medium">{task.reward_hint}</span>
+                        <span className="text-accent font-bold">{task.reward_hint}</span>
                       )}
                       {task.deadline && (
                         <span>До {new Date(task.deadline).toLocaleDateString('ru')}</span>

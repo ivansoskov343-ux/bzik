@@ -48,41 +48,55 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-16">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Вход</CardTitle>
+    <div className="flex-1 flex items-center justify-center px-4 py-16 bg-white font-mono">
+      <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none">
+        <CardHeader className="border-b-2 border-black">
+          <CardTitle className="text-3xl font-bold text-center">Вход</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register('email')} />
-              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+        <CardContent className="pt-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-lg font-bold">Email</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                {...register('email')} 
+                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+              />
+              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="password">Пароль</Label>
-              <Input id="password" type="password" {...register('password')} />
-              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-lg font-bold">Пароль</Label>
+              <Input 
+                id="password" 
+                type="password" 
+                {...register('password')} 
+                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+              />
+              {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
             {loginError && (
-              <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded px-3 py-2">
+              <p className="text-sm text-destructive bg-destructive/10 border border-destructive p-3">
                 {loginError}
               </p>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black text-lg font-bold py-6 transition-all" 
+              disabled={loading}
+            >
               {loading ? 'Входим...' : 'Войти'}
             </Button>
           </form>
-          <div className="mt-4 text-sm text-center space-y-1">
+          <div className="mt-8 text-center space-y-4">
             <div>
-              <Link href="/forgot-password" className="text-blue-600 hover:underline">
+              <Link href="/forgot-password" className="text-black hover:text-accent underline text-lg">
                 Забыли пароль?
               </Link>
             </div>
-            <div>
+            <div className="text-lg">
               Нет аккаунта?{' '}
-              <Link href="/register" className="text-blue-600 hover:underline">
+              <Link href="/register" className="text-accent hover:underline font-bold">
                 Зарегистрироваться
               </Link>
             </div>
