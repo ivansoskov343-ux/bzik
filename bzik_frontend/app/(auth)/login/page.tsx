@@ -49,8 +49,8 @@ export default function LoginPage() {
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-16 bg-white font-mono">
-      <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none">
-        <CardHeader className="border-b-2 border-black">
+      <Card className="w-full max-w-md border border-black rounded-none shadow-none">
+        <CardHeader className="border-b border-black">
           <CardTitle className="text-3xl font-bold text-center">Вход</CardTitle>
         </CardHeader>
         <CardContent className="pt-8">
@@ -61,7 +61,7 @@ export default function LoginPage() {
                 id="email" 
                 type="email" 
                 {...register('email')} 
-                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                className="border border-black rounded-none focus:ring-0 focus:border-black"
               />
               {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
@@ -71,7 +71,7 @@ export default function LoginPage() {
                 id="password" 
                 type="password" 
                 {...register('password')} 
-                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                className="border border-black rounded-none focus:ring-0 focus:border-black"
               />
               {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
@@ -82,7 +82,7 @@ export default function LoginPage() {
             )}
             <Button 
               type="submit" 
-              className="w-full bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black text-lg font-bold py-6 transition-all" 
+              className="w-full bg-black text-white border border-black rounded-none hover:bg-white hover:text-black text-lg font-bold py-6 transition-all" 
               disabled={loading}
             >
               {loading ? 'Входим...' : 'Войти'}

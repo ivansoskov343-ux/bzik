@@ -57,13 +57,13 @@ export default function MiscIdeasPage() {
       <main className="max-w-3xl mx-auto px-4 py-8 w-full bg-white font-mono">
         <h1 className="text-2xl font-bold mb-6 text-black">Прочее — свободные идеи</h1>
 
-        <Card className="mb-8 border-2 border-black rounded-none">
-          <CardHeader className="border-b-2 border-black"><CardTitle className="text-base">Поделиться идеей</CardTitle></CardHeader>
+        <Card className="mb-8 border border-black rounded-none">
+          <CardHeader className="border-b border-black"><CardTitle className="text-base">Поделиться идеей</CardTitle></CardHeader>
           <CardContent className="pt-4">
             <form onSubmit={onSubmit} className="space-y-3">
-              <Textarea {...register('text', { required: true })} placeholder="Ваша идея..." rows={4} className="border-2 border-black rounded-none focus-visible:ring-0 focus-visible:ring-offset-0" />
-              <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.pdf" multiple className="text-sm border-2 border-black rounded-none p-2 w-full" />
-              <Button type="submit" disabled={mutation.isPending} className="bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent">
+              <Textarea {...register('text', { required: true })} placeholder="Ваша идея..." rows={4} className="border border-black rounded-none focus-visible:ring-0 focus-visible:ring-offset-0" />
+              <input ref={fileRef} type="file" accept=".jpg,.jpeg,.png,.pdf" multiple className="text-sm border border-black rounded-none p-2 w-full" />
+              <Button type="submit" disabled={mutation.isPending} className="bg-accent text-white border border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent">
                 {mutation.isPending ? 'Отправка...' : 'Отправить'}
               </Button>
             </form>
@@ -74,7 +74,7 @@ export default function MiscIdeasPage() {
 
         <div className="space-y-3">
           {(ideas as any[]).map((idea: any) => (
-            <Card key={idea.id} className="border-2 border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer">
+            <Card key={idea.id} className="border border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer">
               <CardContent className="pt-4">
                 <div className="flex justify-between mb-1">
                   <span className="text-sm font-medium text-black">{idea.author?.nickname}</span>

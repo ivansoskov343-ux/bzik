@@ -20,7 +20,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="border-b-2 border-black bg-white sticky top-0 z-50 font-mono">
+    <header className="border-b border-black bg-white sticky top-0 z-50 font-mono">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="font-bold text-2xl tracking-tight">
           BZIK
@@ -40,7 +40,7 @@ export default function Navbar() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="border-2 border-black rounded-none hover:bg-black hover:text-white"
+                  className="border border-black rounded-none hover:bg-black hover:text-white"
                 >
                   {user?.nickname ?? 'Профиль'}
                 </Button>
@@ -60,7 +60,7 @@ export default function Navbar() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="border-2 border-black rounded-none hover:bg-black hover:text-white"
+                  className="border border-black rounded-none hover:bg-black hover:text-white"
                 >
                   Войти
                 </Button>
@@ -68,7 +68,7 @@ export default function Navbar() {
               <Link href="/register">
                 <Button 
                   size="sm" 
-                  className="bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent"
+                  className="bg-accent text-white border border-accent rounded-none hover:bg-white hover:text-accent hover:border-accent"
                 >
                   Регистрация
                 </Button>

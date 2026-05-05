@@ -25,8 +25,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-16 bg-white font-mono">
-      <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none">
-        <CardHeader className="border-b-2 border-black">
+      <Card className="w-full max-w-md border border-black rounded-none shadow-none">
+        <CardHeader className="border-b border-black">
           <CardTitle className="text-3xl font-bold text-center">Восстановление пароля</CardTitle>
         </CardHeader>
         <CardContent className="pt-8">
@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
             <div className="text-center">
               <p className="text-lg text-muted-foreground mb-6">Если email зарегистрирован, письмо отправлено.</p>
               <Button 
-                className="bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black"
+                className="bg-black text-white border border-black rounded-none hover:bg-white hover:text-black"
                 onClick={() => setDone(false)}
               >
                 Отправить ещё раз
@@ -47,12 +47,12 @@ export default function ForgotPasswordPage() {
                 <Input 
                   type="email" 
                   {...register('email', { required: true })} 
-                  className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                  className="border border-black rounded-none focus:ring-0 focus:border-black"
                 />
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black text-lg font-bold py-6 transition-all"
+                className="w-full bg-black text-white border border-black rounded-none hover:bg-white hover:text-black text-lg font-bold py-6 transition-all"
               >
                 Отправить ссылку
               </Button>

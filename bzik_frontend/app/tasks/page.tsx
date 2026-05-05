@@ -58,14 +58,14 @@ export default function TasksPage() {
                 size="sm"
                 variant={ordering === key ? 'default' : 'outline'}
                 onClick={() => setOrdering(key)}
-                className="border-2 border-black rounded-none hover:bg-black hover:text-white data-[state=on]:bg-black data-[state=on]:text-white"
+                className="border border-black rounded-none hover:bg-black hover:text-white data-[state=on]:bg-black data-[state=on]:text-white"
               >
                 {ORDERING_LABELS[key]}
               </Button>
             ))}
           </div>
           <Input
-            className="max-w-xs border-2 border-black rounded-none focus:ring-0 focus:border-black"
+            className="max-w-xs border border-black rounded-none focus:ring-0 focus:border-black"
             placeholder="Поиск..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -89,8 +89,8 @@ export default function TasksPage() {
         <div className="space-y-6">
           {tasks.map((task) => (
             <Link key={task.id} href={`/tasks/${task.id}`}>
-              <Card className={`border-2 border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer ${task.is_closed ? 'opacity-60' : ''}`}>
-                <CardHeader className="pb-2 border-b-2 border-black">
+              <Card className={`border border-black rounded-none hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer ${task.is_closed ? 'opacity-60' : ''}`}>
+                <CardHeader className="pb-2 border-b border-black">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="text-xl">{task.title}</CardTitle>
                     <div className="flex gap-2 flex-shrink-0">

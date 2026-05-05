@@ -48,13 +48,13 @@ export default function RegisterPage() {
   if (done) {
     return (
       <div className="flex-1 flex items-center justify-center px-4 bg-white font-mono">
-        <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none text-center p-10">
+        <Card className="w-full max-w-md border border-black rounded-none shadow-none text-center p-10">
           <p className="text-2xl font-bold mb-4">Аккаунт создан!</p>
           <p className="text-muted-foreground text-lg">
             Проверьте email и перейдите по ссылке для подтверждения.
           </p>
           <Link href="/login">
-            <Button className="mt-6 bg-black text-white border-2 border-black rounded-none hover:bg-white hover:text-black">
+            <Button className="mt-6 bg-black text-white border border-black rounded-none hover:bg-white hover:text-black">
               Войти
             </Button>
           </Link>
@@ -65,8 +65,8 @@ export default function RegisterPage() {
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-16 bg-white font-mono">
-      <Card className="w-full max-w-md border-2 border-black rounded-none shadow-none">
-        <CardHeader className="border-b-2 border-black">
+      <Card className="w-full max-w-md border border-black rounded-none shadow-none">
+        <CardHeader className="border-b border-black">
           <CardTitle className="text-3xl font-bold text-center">Регистрация</CardTitle>
         </CardHeader>
         <CardContent className="pt-8">
@@ -77,7 +77,7 @@ export default function RegisterPage() {
                 id="email" 
                 type="email" 
                 {...register('email')} 
-                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                className="border border-black rounded-none focus:ring-0 focus:border-black"
               />
               {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
@@ -86,7 +86,7 @@ export default function RegisterPage() {
               <Input 
                 id="nickname" 
                 {...register('nickname')} 
-                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                className="border border-black rounded-none focus:ring-0 focus:border-black"
               />
               {errors.nickname && <p className="text-sm text-destructive">{errors.nickname.message}</p>}
             </div>
@@ -96,7 +96,7 @@ export default function RegisterPage() {
                 id="password" 
                 type="password" 
                 {...register('password')} 
-                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                className="border border-black rounded-none focus:ring-0 focus:border-black"
               />
               {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
@@ -106,13 +106,13 @@ export default function RegisterPage() {
                 id="password2" 
                 type="password" 
                 {...register('password2')} 
-                className="border-2 border-black rounded-none focus:ring-0 focus:border-black"
+                className="border border-black rounded-none focus:ring-0 focus:border-black"
               />
               {errors.password2 && <p className="text-sm text-destructive">{errors.password2.message}</p>}
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-accent text-white border-2 border-accent rounded-none hover:bg-white hover:text-accent text-lg font-bold py-6 transition-all" 
+              className="w-full bg-accent text-white border border-accent rounded-none hover:bg-white hover:text-accent text-lg font-bold py-6 transition-all" 
               disabled={loading}
             >
               {loading ? 'Создаём аккаунт...' : 'Зарегистрироваться'}
