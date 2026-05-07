@@ -46,23 +46,21 @@ jobs:
 
       - name: Copy compose file to VM
         env:
-          VM_USER: ${{ secrets.VM_USER }}
           VM_HOST: ${{ secrets.VM_HOST }}
         run: |
-          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" 'mkdir -p ~/bzik'
-          scp -i ~/.ssh/deploy_key docker-compose.prod.yml "$VM_USER@$VM_HOST:~/bzik/"
+          ssh -i ~/.ssh/deploy_key "ubuntu@$VM_HOST" 'mkdir -p ~/bzik'
+          scp -i ~/.ssh/deploy_key docker-compose.prod.yml "ubuntu@$VM_HOST:~/bzik/"
 
       - name: Deploy on VM
         env:
           BACKEND_IMAGE: ${{ steps.build-backend.outputs.image }}
           FRONTEND_IMAGE: ${{ steps.build-frontend.outputs.image }}
           YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
-          VM_USER: ${{ secrets.VM_USER }}
           VM_HOST: ${{ secrets.VM_HOST }}
         run: |
           SA_KEY_B64=$(echo "$YC_SA_KEY" | base64 -w 0)
 
-          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" \
+          ssh -i ~/.ssh/deploy_key "ubuntu@$VM_HOST" \
             "BACKEND_IMAGE='$BACKEND_IMAGE' FRONTEND_IMAGE='$FRONTEND_IMAGE' SA_KEY_B64='$SA_KEY_B64' bash -s" << 'REMOTE_EOF'
           set -e
           cd ~/bzik
