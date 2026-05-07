@@ -34,15 +34,6 @@ jobs:
           docker push $IMG
           echo "image=$IMG" >> $GITHUB_OUTPUT
 
-      - name: Copy compose file to VM
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          source: docker-compose.prod.yml
-          target: ~/bzik/
-
       - name: Deploy on VM
         uses: appleboy/ssh-action@v1
         with:
@@ -51,18 +42,59 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
             set -e
-            cd ~/bzik
+            mkdir -p ~/bzik
+
+            cat > ~/bzik/docker-compose.prod.yml << 'COMPOSEOF'
+            services:
+              db:
+                image: postgres:16-alpine
+                restart: unless-stopped
+                env_file: /home/ubuntu/bzik/.env
+                volumes:
+                  - pgdata:/var/lib/postgresql/data
+
+              redis:
+                image: redis:7-alpine
+                restart: unless-stopped
+
+              backend:
+                image: ${{ steps.build-backend.outputs.image }}
+                restart: unless-stopped
+                env_file: /home/ubuntu/bzik/.env
+                depends_on:
+                  - db
+                  - redis
+                ports:
+                  - "127.0.0.1:8086:8000"
+
+              celery:
+                image: ${{ steps.build-backend.outputs.image }}
+                restart: unless-stopped
+                command: celery -A config worker -l info
+                env_file: /home/ubuntu/bzik/.env
+                depends_on:
+                  - db
+                  - redis
+
+              frontend:
+                image: ${{ steps.build-frontend.outputs.image }}
+                restart: unless-stopped
+                environment:
+                  - NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io/api
+                ports:
+                  - "127.0.0.1:8085:3000"
+
+            volumes:
+              pgdata:
+            COMPOSEOF
 
             echo '${{ secrets.YC_SA_KEY }}' | docker login \
               --username json_key --password-stdin cr.yandex
 
-            export BACKEND_IMAGE="${{ steps.build-backend.outputs.image }}"
-            export FRONTEND_IMAGE="${{ steps.build-frontend.outputs.image }}"
+            docker compose -f ~/bzik/docker-compose.prod.yml pull
+            docker compose -f ~/bzik/docker-compose.prod.yml up -d
 
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d
-
-            docker compose -f docker-compose.prod.yml exec -T backend \
+            docker compose -f ~/bzik/docker-compose.prod.yml exec -T backend \
               python manage.py migrate --settings=config.settings.prod
 
             docker image prune -f
