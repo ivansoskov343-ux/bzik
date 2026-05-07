@@ -34,67 +34,75 @@ jobs:
           docker push $IMG
           echo "image=$IMG" >> $GITHUB_OUTPUT
 
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
+
       - name: Deploy on VM
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.VM_SSH_KEY }}
-          script: |
-            set -e
-            mkdir -p ~/bzik
+        env:
+          BACKEND_IMAGE: ${{ steps.build-backend.outputs.image }}
+          FRONTEND_IMAGE: ${{ steps.build-frontend.outputs.image }}
+          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} bash << EOF
+          set -e
+          mkdir -p ~/bzik
 
-            cat > ~/bzik/docker-compose.prod.yml << 'COMPOSEOF'
-            services:
-              db:
-                image: postgres:16-alpine
-                restart: unless-stopped
-                env_file: /home/ubuntu/bzik/.env
-                volumes:
-                  - pgdata:/var/lib/postgresql/data
+          cat > ~/bzik/docker-compose.prod.yml << 'COMPOSEOF'
+          services:
+            db:
+              image: postgres:16-alpine
+              restart: unless-stopped
+              env_file: /home/ubuntu/bzik/.env
+              volumes:
+                - pgdata:/var/lib/postgresql/data
 
-              redis:
-                image: redis:7-alpine
-                restart: unless-stopped
+            redis:
+              image: redis:7-alpine
+              restart: unless-stopped
 
-              backend:
-                image: ${{ steps.build-backend.outputs.image }}
-                restart: unless-stopped
-                env_file: /home/ubuntu/bzik/.env
-                depends_on:
-                  - db
-                  - redis
-                ports:
-                  - "127.0.0.1:8086:8000"
+            backend:
+              image: ${BACKEND_IMAGE}
+              restart: unless-stopped
+              env_file: /home/ubuntu/bzik/.env
+              depends_on:
+                - db
+                - redis
+              ports:
+                - "127.0.0.1:8086:8000"
 
-              celery:
-                image: ${{ steps.build-backend.outputs.image }}
-                restart: unless-stopped
-                command: celery -A config worker -l info
-                env_file: /home/ubuntu/bzik/.env
-                depends_on:
-                  - db
-                  - redis
+            celery:
+              image: ${BACKEND_IMAGE}
+              restart: unless-stopped
+              command: celery -A config worker -l info
+              env_file: /home/ubuntu/bzik/.env
+              depends_on:
+                - db
+                - redis
 
-              frontend:
-                image: ${{ steps.build-frontend.outputs.image }}
-                restart: unless-stopped
-                environment:
-                  - NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io/api
-                ports:
-                  - "127.0.0.1:8085:3000"
+            frontend:
+              image: ${FRONTEND_IMAGE}
+              restart: unless-stopped
+              environment:
+                - NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io/api
+              ports:
+                - "127.0.0.1:8085:3000"
 
-            volumes:
-              pgdata:
-            COMPOSEOF
+          volumes:
+            pgdata:
+          COMPOSEOF
 
-            echo '${{ secrets.YC_SA_KEY }}' | docker login \
-              --username json_key --password-stdin cr.yandex
+          echo '${YC_SA_KEY}' | docker login --username json_key --password-stdin cr.yandex
 
-            docker compose -f ~/bzik/docker-compose.prod.yml pull
-            docker compose -f ~/bzik/docker-compose.prod.yml up -d
+          export BACKEND_IMAGE="${BACKEND_IMAGE}"
+          export FRONTEND_IMAGE="${FRONTEND_IMAGE}"
 
-            docker compose -f ~/bzik/docker-compose.prod.yml exec -T backend \
-              python manage.py migrate --settings=config.settings.prod
-
-            docker image prune -f
+          docker compose -f ~/bzik/docker-compose.prod.yml pull
+          docker compose -f ~/bzik/docker-compose.prod.yml up -d
+          docker compose -f ~/bzik/docker-compose.prod.yml exec -T backend \
+            python manage.py migrate --settings=config.settings.prod
+          docker image prune -f
+          EOF
