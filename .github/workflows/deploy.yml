@@ -29,7 +29,7 @@ jobs:
         run: |
           IMG=cr.yandex/${{ secrets.YC_REGISTRY_ID }}/bzik-frontend:${{ github.sha }}
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io/api \
+            --build-arg NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io \
             -t $IMG ./bzik_frontend
           docker push $IMG
           echo "image=$IMG" >> $GITHUB_OUTPUT

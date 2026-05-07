@@ -33,7 +33,7 @@ services:
     image: ${FRONTEND_IMAGE}
     restart: unless-stopped
     environment:
-      - NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io/api
+      - NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io
     ports:
       - "127.0.0.1:8085:3000"
 
