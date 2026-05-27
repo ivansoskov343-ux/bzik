@@ -2,8 +2,8 @@ name: Sync to Hugging Face hub
 
 on:
   push:
-    branches: [main]        # Автоматический запуск при пуше в main
-  workflow_dispatch:        # Возможность запустить вручную из интерфейса GitHub
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   sync-to-hub:
@@ -16,4 +16,4 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://wwhcoque:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/wwhcoque/bzik main
+        run: git push --force https://wwhcoque:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/wwhcoque/bzik main
