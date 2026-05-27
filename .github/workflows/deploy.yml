@@ -1,75 +1,19 @@
-name: Deploy to chastnik
+name: Sync to Hugging Face hub
 
 on:
   push:
-    branches: [main]
+    branches: [main]        # Автоматический запуск при пуше в main
+  workflow_dispatch:        # Возможность запустить вручную из интерфейса GitHub
 
 jobs:
-  deploy:
+  sync-to-hub:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Login to Yandex Container Registry
-        uses: yc-actions/yc-cr-login@v3
+      - uses: actions/checkout@v3
         with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_KEY }}
-
-      - name: Build and push backend
-        id: build-backend
-        run: |
-          IMG=cr.yandex/${{ secrets.YC_REGISTRY_ID }}/bzik-backend:${{ github.sha }}
-          docker build -t $IMG ./bzik_backend
-          docker push $IMG
-          echo "image=$IMG" >> $GITHUB_OUTPUT
-
-      - name: Build and push frontend
-        id: build-frontend
-        run: |
-          IMG=cr.yandex/${{ secrets.YC_REGISTRY_ID }}/bzik-frontend:${{ github.sha }}
-          docker build \
-            --build-arg NEXT_PUBLIC_API_URL=https://bzik.158-160-109-247.nip.io \
-            -t $IMG ./bzik_frontend
-          docker push $IMG
-          echo "image=$IMG" >> $GITHUB_OUTPUT
-
-      - name: Setup SSH key
+          fetch-depth: 0
+          lfs: true
+      - name: Push to hub
         env:
-          SSH_KEY: ${{ secrets.VM_SSH_KEY }}
-          VM_HOST: ${{ secrets.VM_HOST }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$VM_HOST" >> ~/.ssh/known_hosts
-
-      - name: Copy compose file to VM
-        env:
-          VM_HOST: ${{ secrets.VM_HOST }}
-        run: |
-          ssh -i ~/.ssh/deploy_key "ubuntu@$VM_HOST" 'mkdir -p ~/bzik'
-          scp -i ~/.ssh/deploy_key docker-compose.prod.yml "ubuntu@$VM_HOST:~/bzik/"
-
-      - name: Deploy on VM
-        env:
-          BACKEND_IMAGE: ${{ steps.build-backend.outputs.image }}
-          FRONTEND_IMAGE: ${{ steps.build-frontend.outputs.image }}
-          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
-          VM_HOST: ${{ secrets.VM_HOST }}
-        run: |
-          SA_KEY_B64=$(echo "$YC_SA_KEY" | base64 -w 0)
-
-          ssh -i ~/.ssh/deploy_key "ubuntu@$VM_HOST" \
-            "BACKEND_IMAGE='$BACKEND_IMAGE' FRONTEND_IMAGE='$FRONTEND_IMAGE' SA_KEY_B64='$SA_KEY_B64' bash -s" << 'REMOTE_EOF'
-          set -e
-          cd ~/bzik
-
-          echo "$SA_KEY_B64" | base64 -d | docker login --username json_key --password-stdin cr.yandex
-
-          docker compose -f docker-compose.prod.yml pull
-          docker compose -f docker-compose.prod.yml up -d
-          docker compose -f docker-compose.prod.yml exec -T backend \
-            python manage.py migrate --settings=config.settings.prod
-          docker image prune -f
-          REMOTE_EOF
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: git push https://wwhcoque:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/wwhcoque/bzik main
