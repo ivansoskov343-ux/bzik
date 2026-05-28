@@ -2,15 +2,10 @@
 set -e
 
 echo "=== DIAGNOSTIC START ==="
-echo "Checking DATABASE_URL variable..."
-if [ -z "$DATABASE_URL" ]; then
-    echo "ERROR: DATABASE_URL is NOT set in environment!"
-else
-    echo "DATABASE_URL is set (first 30 chars): ${DATABASE_URL:0:30}..."
-fi
+echo "DATABASE_URL is set: ${DATABASE_URL:0:50}..."
 echo "=== DIAGNOSTIC END ==="
 
-echo "Waiting for database..."
+echo "Waiting for database (5s)..."
 sleep 5
 
 echo "Applying migrations..."
