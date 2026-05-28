@@ -5,10 +5,10 @@ echo "Waiting for database..."
 sleep 5
 
 echo "Applying migrations..."
-python /app/backend/manage.py migrate --noinput
+python3 /app/backend/manage.py migrate --noinput
 
 echo "Collecting static files..."
-python /app/backend/manage.py collectstatic --noinput
+python3 /app/backend/manage.py collectstatic --noinput
 
 echo "Starting Supervisor..."
 exec /usr/bin/supervisord -n
