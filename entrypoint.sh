@@ -7,6 +7,7 @@ export DEBUG="${DEBUG:-False}"
 export DJANGO_SETTINGS_MODULE="config.settings"
 
 echo "=== DATABASE_URL (first 60): ${DATABASE_URL:0:60} ==="
+echo "=== DJANGO_SETTINGS_MODULE = ${DJANGO_SETTINGS_MODULE} ==="
 
 # Проверка парсинга переменной
 python3 <<EOF
@@ -81,6 +82,19 @@ STATIC_URL = 'static/'
 STATIC_ROOT = '/app/backend/staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EOL
+
+# Проверим, что наш settings.py работает
+echo "Checking created settings.py..."
+python3 -c "
+import sys, os
+sys.path.insert(0, '/app/backend')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+import django
+django.setup()
+from django.conf import settings
+print('DATABASES ENGINE:', settings.DATABASES['default']['ENGINE'])
+print('HOST:', settings.DATABASES['default']['HOST'])
+"
 
 echo "Applying migrations..."
 python3 /app/backend/manage.py migrate --noinput
