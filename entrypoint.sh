@@ -7,7 +7,6 @@ HOST=$(echo "$ORIG_DATABASE_URL" | sed -n 's/.*@\([^:]*\):.*/\1/p')
 
 if [ -n "$HOST" ]; then
     echo "Original host: $HOST"
-    # Пытаемся получить IPv4 адрес через nslookup
     IPV4=$(nslookup -type=A "$HOST" 2>/dev/null | grep -A1 'Name:' | grep 'Address:' | awk '{print $2}' | grep -v ':' | head -1)
     if [ -n "$IPV4" ]; then
         echo "Resolved to IPv4: $IPV4"
@@ -20,7 +19,6 @@ else
     NEW_DATABASE_URL="$ORIG_DATABASE_URL"
 fi
 
-# Добавляем sslmode=require
 if [[ "$NEW_DATABASE_URL" != *"sslmode"* ]]; then
     if [[ "$NEW_DATABASE_URL" == *"?"* ]]; then
         NEW_DATABASE_URL="${NEW_DATABASE_URL}&sslmode=require"
@@ -36,7 +34,6 @@ export DJANGO_SETTINGS_MODULE="my_settings"
 
 echo "=== Using DATABASE_URL: ${DATABASE_URL:0:80}... ==="
 
-# Создаём отдельный файл настроек со всеми приложениями
 cat > /app/backend/my_settings.py <<'EOL'
 import os
 import dj_database_url
@@ -108,6 +105,22 @@ STATIC_ROOT = '/app/backend/staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', '')
+
+# Celery
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', '')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_BROKER_URL', '')
+
+# Frontend URL for email links
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://wwhcoque-bzik.hf.space')
 EOL
 
 echo "=== Applying migrations with my_settings ==="
