@@ -1,18 +1,16 @@
 #!/bin/bash
 set -e
 
-# Получаем оригинальную строку подключения
+# Исходная строка подключения
 ORIG_DATABASE_URL="${DATABASE_URL}"
+HOST=$(echo "$ORIG_DATABASE_URL" | sed -n 's/.*@\([^:]*\):.*/\1/p')
 
-# Извлекаем хост (часть между @ и :порт)
-HOST=$(echo "$ORIG_DATABASE_URL" | sed -n 's/.*@\([^:]*\).*/\1/p')
 if [ -n "$HOST" ]; then
     echo "Original host: $HOST"
-    # Пытаемся получить IPv4 адрес этого хоста
-    IPV4=$(getent ahosts "$HOST" | head -1 | awk '{print $1}')
-    if [[ "$IPV4" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    # Пытаемся получить IPv4 адрес через nslookup
+    IPV4=$(nslookup -type=A "$HOST" 2>/dev/null | grep -A1 'Name:' | grep 'Address:' | awk '{print $2}' | grep -v ':' | head -1)
+    if [ -n "$IPV4" ]; then
         echo "Resolved to IPv4: $IPV4"
-        # Заменяем хост на его IPv4 адрес
         NEW_DATABASE_URL=$(echo "$ORIG_DATABASE_URL" | sed "s/$HOST/$IPV4/")
     else
         echo "Could not resolve IPv4, using original host"
@@ -22,9 +20,13 @@ else
     NEW_DATABASE_URL="$ORIG_DATABASE_URL"
 fi
 
-# Добавляем sslmode=require (обязательно для Supabase)
+# Добавляем sslmode=require
 if [[ "$NEW_DATABASE_URL" != *"sslmode"* ]]; then
-    NEW_DATABASE_URL="${NEW_DATABASE_URL}?sslmode=require"
+    if [[ "$NEW_DATABASE_URL" == *"?"* ]]; then
+        NEW_DATABASE_URL="${NEW_DATABASE_URL}&sslmode=require"
+    else
+        NEW_DATABASE_URL="${NEW_DATABASE_URL}?sslmode=require"
+    fi
 fi
 
 export DATABASE_URL="$NEW_DATABASE_URL"
@@ -34,7 +36,7 @@ export DJANGO_SETTINGS_MODULE="my_settings"
 
 echo "=== Using DATABASE_URL: ${DATABASE_URL:0:80}... ==="
 
-# Создаём my_settings.py с полным списком приложений
+# Создаём отдельный файл настроек со всеми приложениями
 cat > /app/backend/my_settings.py <<'EOL'
 import os
 import dj_database_url
@@ -105,7 +107,6 @@ STATIC_ROOT = '/app/backend/staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Если в проекте используется своя модель пользователя
 AUTH_USER_MODEL = 'accounts.User'
 EOL
 
