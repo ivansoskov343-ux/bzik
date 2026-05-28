@@ -7,7 +7,7 @@ COPY bzik_frontend/ .
 ENV NEXT_PUBLIC_API_URL=/api
 RUN npm run build
 
-# ---- Этап 2: Сборка Backend (FastAPI) ----
+# ---- Этап 2: Сборка Backend (Django) ----
 FROM python:3.11-slim AS backend-builder
 WORKDIR /app/backend
 COPY bzik_backend/requirements.txt .
@@ -39,8 +39,12 @@ COPY --from=frontend-builder /app/frontend /app/frontend
 COPY nginx/nginx.conf /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Копируем и настраиваем entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Hugging Face требует порт 7860
 EXPOSE 7860
 
-# Запускаем Supervisor
-CMD ["/usr/bin/supervisord", "-n"]
+# Запускаем entrypoint.sh (он выполнит миграции, статику и затем supervisor)
+CMD ["/entrypoint.sh"]
