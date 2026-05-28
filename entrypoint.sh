@@ -119,6 +119,11 @@ DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', '')
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', '')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_BROKER_URL', '')
 
+# Celery SSL для Upstash
+import ssl
+CELERY_BROKER_USE_SSL = {'ssl_cert_reqs': ssl.CERT_NONE}
+CELERY_REDIS_BACKEND_USE_SSL = {'ssl_cert_reqs': ssl.CERT_NONE}
+
 # Frontend URL for email links
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://wwhcoque-bzik.hf.space')
 EOL
