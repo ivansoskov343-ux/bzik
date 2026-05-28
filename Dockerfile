@@ -10,12 +10,19 @@ RUN npm run build
 # ---- Этап 2: Финальный образ ----
 FROM ubuntu:22.04
 
+# Отключаем интерактивные запросы при установке пакетов
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
 # Устанавливаем Python 3.11, Nginx, Supervisor, Node.js 20
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     curl \
     software-properties-common \
+    tzdata \
+    && ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
     && add-apt-repository ppa:deadsnakes/ppa -y \
     && apt-get update \
     && apt-get install -y python3.11 python3.11-venv python3.11-dev \
