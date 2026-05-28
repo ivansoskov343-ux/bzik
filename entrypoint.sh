@@ -4,29 +4,10 @@ set -e
 export DATABASE_URL="${DATABASE_URL}"
 export SECRET_KEY="${SECRET_KEY}"
 export DEBUG="${DEBUG:-False}"
-export DJANGO_SETTINGS_MODULE="config.settings"
+export DJANGO_SETTINGS_MODULE="my_settings"
 
-echo "=== DATABASE_URL (first 60): ${DATABASE_URL:0:60} ==="
-echo "=== DJANGO_SETTINGS_MODULE = ${DJANGO_SETTINGS_MODULE} ==="
-
-# Проверка парсинга переменной
-python3 <<EOF
-import os, sys, dj_database_url
-url = os.environ.get('DATABASE_URL')
-if not url:
-    print("ERROR: DATABASE_URL not set")
-    sys.exit(1)
-print("Parsing DATABASE_URL...")
-config = dj_database_url.parse(url)
-print("Got config:", config)
-if 'ENGINE' not in config:
-    print("ERROR: ENGINE not in config")
-    sys.exit(1)
-EOF
-
-# Принудительно создаём settings.py прямо в процессе (на всякий случай)
-mkdir -p /app/backend/config
-cat > /app/backend/config/settings.py <<'EOL'
+# Создаём отдельный файл настроек my_settings.py
+cat > /app/backend/my_settings.py <<'EOL'
 import os
 import dj_database_url
 
@@ -83,21 +64,8 @@ STATIC_ROOT = '/app/backend/staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EOL
 
-# Проверим, что наш settings.py работает
-echo "Checking created settings.py..."
-python3 -c "
-import sys, os
-sys.path.insert(0, '/app/backend')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-import django
-django.setup()
-from django.conf import settings
-print('DATABASES ENGINE:', settings.DATABASES['default']['ENGINE'])
-print('HOST:', settings.DATABASES['default']['HOST'])
-"
+echo "=== Applying migrations with my_settings ==="
+python3 /app/backend/manage.py migrate --settings=my_settings --noinput
 
-echo "Applying migrations..."
-python3 /app/backend/manage.py migrate --noinput
-
-echo "Starting Supervisor..."
+echo "=== Starting Supervisor ==="
 exec /usr/bin/supervisord -n
