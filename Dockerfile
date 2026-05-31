@@ -4,7 +4,7 @@ WORKDIR /app/frontend
 COPY bzik_frontend/package*.json ./
 RUN npm ci
 COPY bzik_frontend/ .
-ENV NEXT_PUBLIC_API_URL=
+ENV NEXT_PUBLIC_API_URL=https://wwhcoque-bzik.hf.space
 RUN npm run build
 
 # ---- Этап 2: Финальный образ ----
